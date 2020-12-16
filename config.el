@@ -57,3 +57,23 @@
 (add-hook! 'lispy-mode-hook #'lispyville-mode)
 (custom-set-variables
  '(conda-anaconda-home "/home/jonathan/miniconda3/"))
+(defadvice projectile-on (around exlude-tramp activate)
+  "This should disable projectile when visiting a remote file"
+  (unless  (--any? (and it (file-remote-p it))
+                   (list
+                    (buffer-file-name)
+                    list-buffers-directory
+                    default-directory
+                    dired-directory))
+    ad-do-it))
+(setq projectile-mode-line "Projectile")
+
+(add-hook 'python-mode-hook
+      (lambda ()
+        (setq indent-tabs-mode t)
+        (setq tab-width 4)
+        (setq python-indent-offset 4)))
+
+(map!
+ :leader
+ :nv "d" #'delete-region)
